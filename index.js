@@ -81,6 +81,6 @@ app.post("/removeSearchFromUser", async (req, res) => {
 });
 
 const port = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(port, () => {
   console.log(`Server listening on ${port}`);
 });
