@@ -2,12 +2,14 @@
 const puppeteer = require("puppeteer-extra");
 const stealthPlugin = require("puppeteer-extra-plugin-stealth");
 puppeteer.use(stealthPlugin());
+const functions = require("firebase-functions");
 
 async function scrape(url, searchWord) {
   const browser = await puppeteer.launch({
     headeless: true,
     userDataDir: "./data",
     devtools: false,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
   const page = await browser.newPage();
