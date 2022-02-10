@@ -49,7 +49,6 @@ async function scrape(url, searchWord) {
     page.click("#searchfilterdivtitle > div:nth-child(3) > a"),
     // page.waitForNavigation({ waitUntil: "networkidle0" }),
     //ta ett screenshot och se hur syns
-    await page.screenshot({ path: "screenshotz.png" }),
   ]);
 
   await page.type("#searchtxt", searchWord + "");
