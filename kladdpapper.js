@@ -1,4 +1,9 @@
-const { mailIfNewAdds, sleep, getUserFromDb } = require("./BortskankesService");
+const {
+  mailIfNewAdds,
+  sleep,
+  getUserFromDb,
+  getUserEarlierSearchWords,
+} = require("./BortskankesService");
 const { mongooseConnect } = require("./MongooseConnect");
 const Search = require("./Search");
 
@@ -8,17 +13,29 @@ const checkForNewAddsForEveryUserAndSendEmail = async () => {
 
   //skapar en array med bara användare och sökObj
   const userAndSearches = [];
-  dataFromDb.forEach((user) => {
+  dataFromDb.forEach(async (user) => {
     userAndSearches.push({
       email: user.email,
       searches: user.searches,
     });
   });
 
+  // {
+  //  'email': 'holewa@gmail.com',
+  //   'searches': [ {searchWord: 'blandare'
+  //                      adArray{}
+  //                      },
+  //                   {},
+  //                   {}
+  //    ]
+
+  //
+  // }
+
   //skapar ett array med enbart användare och sökord
   const userAndSearchesObject = [];
   for (let i = 0; i < userAndSearches.length; i++) {
-    for (let j = 0; j < userAndSearches[i].searches.length; j++) {
+    for (let j = 0; j < userAndSearches[i].searches.length - 1; j++) {
       userAndSearchesObject.push({
         email: userAndSearches[i].email,
         searchWord: userAndSearches[i].searches[j].searchWord,
@@ -27,7 +44,7 @@ const checkForNewAddsForEveryUserAndSendEmail = async () => {
   }
 
   //för varje användare + sökord => skapa en prenumeration
-  const promises = userAndSearchesObject.map(async (obj) => {
+  userAndSearchesObject.map(async (obj) => {
     const data = await mailIfNewAdds(obj.email, obj.searchWord);
 
     return data;
@@ -52,6 +69,8 @@ const removeSearchFromDb = async (email, searchWordToDelete) => {
   const user = await getUserFromDb(email);
 
   userSearches = user.searches;
+
+  console.log(userSearches);
 
   const updatedSearches = userSearches.filter(
     (obj) => obj.searchWord !== searchWordToDelete
@@ -83,11 +102,11 @@ mongooseConnect();
 const runEveryXMinutes = async (minutes) => {
   while (true) {
     Promise.all[
-      (console.log(`Now sleeping for ${minutes} minutes`), await sleep(minutes))
-    ];
-    Promise.all[
       (console.log("Kollar behovet av mailutskick..."),
       await checkForNewAddsForEveryUserAndSendEmail())
+    ];
+    Promise.all[
+      (console.log(`Now sleeping for ${minutes} minutes`), await sleep(minutes))
     ];
   }
 };

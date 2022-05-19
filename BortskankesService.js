@@ -20,6 +20,8 @@ async function startASubscription(email, searchWord) {
   if (userExist) {
     const user = await getUserFromDb(email);
 
+    const earlierSearches = await getUserEarlierSearchWords(email);
+
     //hämtar användarens olika sökningar inkl resultat
     const searchArray = user.searches;
 
@@ -42,6 +44,7 @@ async function startASubscription(email, searchWord) {
       response = {
         typeOfAlert: "alert alert-primary alert-dismissible fade show",
         text: "Prenumeration skapad!",
+        earlierSearches: earlierSearches,
       };
 
       //lägger till den nya datan i arrayen som plockades ur från användaren
@@ -74,7 +77,7 @@ async function startASubscription(email, searchWord) {
     };
 
     //skapar data för ny användare
-    const dbData = await Search.create(search);
+    await Search.create(search);
   }
 
   return response;
@@ -88,6 +91,7 @@ async function checkForNewAdds(email, searchWord) {
 
   //senaste annonsen för givet sökord
   const lastScrapedAd = lastScrapedAds[0];
+
   //senaste annonsens länk, titel och tidsstämpel
   const lastScrapedAdLink = lastScrapedAd.link;
   const lastScrapedAdTitle = lastScrapedAd.adTitle;
@@ -180,7 +184,7 @@ const getUserEarlierSearchWords = async (email) => {
 const getAllAdsForGivenSearchWord = async (searchWord) => {
   //skrapade annonser för givet sökord
   const data = await scrape(
-    "https://www.bortskankes.se/index.php?lan=&kat=&searchtxt=&page=0&showclosed=n",
+    "https://www.bortskankes.se/stockholm/",
     searchWord
   );
 
