@@ -13,11 +13,11 @@ const {
 } = require("./BortskankesService");
 const { sendMail } = require("./nodemailer");
 const { removeSearchFromDb, runEveryXMinutes } = require("./kladdpapper");
-const { removeSearchFromDb20 } = require("./kladdiz");
 
 const {
   // startASubscription
   getEarlierSearchWords,
+  removeSearch,
 } = require("./UserService");
 
 app.use(cors());
@@ -85,7 +85,7 @@ app.post("/getUsersSubscribes", async (req, res) => {
 });
 
 app.post("/removeSearchFromUser", async (req, res) => {
-  const response = await removeSearchFromDb20(user, req.body.searchWord);
+  const response = await removeSearch(user, req.body.searchWord);
 
   res.send(response);
 });
