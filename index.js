@@ -10,15 +10,11 @@ const {
   getLastAddForGivenSearch,
   userExists,
   getUserFromDb,
-} = require("./BortskankesService");
+} = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
-const { removeSearchFromDb, runEveryXMinutes } = require("./kladdpapper");
+const { runEveryXMinutes } = require("./kladdpapper");
 
-const {
-  // startASubscription
-  getEarlierSearchWords,
-  removeSearch,
-} = require("./UserService");
+const { getEarlierSearchWords, removeSearch } = require("./UserService");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -29,11 +25,10 @@ mongooseConnect();
 let user;
 // checkForNewAddsForEveryUserAndSendEmail();
 
-const userExistsMW = async (req, res, next) => {
-  //kollar om användaren finns i db
-  const userExists14 = await userExists(req.body.email);
-  if (userExists14) {
-    user = await getUserFromDb(req.body.email);
+const getUserMW = async (req, res, next) => {
+  //hämtar den givna användaren
+  user = await getUserFromDb(req.body.email);
+  if (user != null) {
     next();
     return;
   } else {
@@ -45,14 +40,7 @@ const userExistsMW = async (req, res, next) => {
     res.send(response);
   }
 };
-
-const getUserMW = async (req, res, next) => {
-  //hämtar given användare
-  const user = await getUserFromDb(req.body.email);
-  next();
-};
-
-app.use(userExistsMW, getUserMW);
+app.use(getUserMW);
 
 //starta en ny subscription
 app.post("/startASubscription", async (req, res) => {

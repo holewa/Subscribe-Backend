@@ -3,7 +3,7 @@ const {
   sleep,
   getUserFromDb,
   getUserEarlierSearchWords,
-} = require("./BortskankesService");
+} = require("./DatabaseService");
 const { mongooseConnect } = require("./MongooseConnect");
 const Search = require("./Search");
 
