@@ -77,8 +77,9 @@ const removeSearch = async (user, searchWordToDelete) => {
   console.log("Sökordet borttaget!");
 
   const response = {
-    typeOfAlert: "alert alert-primary alert-dismissible fade show",
-    text: "Prenumeration för sökord borttaget!",
+    typeOfAlert: "alert alert-danger alert-dismissible fade show",
+    text: "Användaren hittades inte",
+    earlierSearches: [],
     earlierSearches: earlierSearches,
   };
 
@@ -94,6 +95,8 @@ const getEarlierSearchWords = async (user) => {
   });
 
   const response = {
+    typeOfAlert: "alert alert-danger alert-dismissible fade show",
+    text: "Inga uppsatta prenumerationer",
     earlierSearches: earlierSearches,
   };
 

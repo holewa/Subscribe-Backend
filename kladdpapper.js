@@ -27,10 +27,10 @@ const checkForNewAddsForEveryUserAndSendEmail = async () => {
   //
   // }
 
-  //skapar ett array med enbart användare och sökord
+  //skapar en array med enbart användare och sökord
   const userAndSearchesObject = [];
   for (let i = 0; i < userAndSearches.length; i++) {
-    for (let j = 0; j < userAndSearches[i].searches.length - 1; j++) {
+    for (let j = 0; j < userAndSearches[i].searches.length; j++) {
       userAndSearchesObject.push({
         email: userAndSearches[i].email,
         searchWord: userAndSearches[i].searches[j].searchWord,
