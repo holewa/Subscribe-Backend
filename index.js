@@ -16,7 +16,7 @@ const { runEveryXMinutes } = require("./kladdpapper");
 
 const { getEarlierSearchWords, removeSearch } = require("./UserService");
 
-const { startASubscription } = require("./Testing");
+const { startASubscription } = require("./Testing2");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,11 +25,13 @@ mongooseConnect();
 //runEveryXMinutes(20);
 
 let user;
+let searchWord;
 // checkForNewAddsForEveryUserAndSendEmail();
 
 const getUserMW = async (req, res, next) => {
   //hämtar den givna användaren
   user = await getUserFromDb(req.body.email);
+  searchWord = req.body.searchWord;
   if (user != null) {
     next();
     return;
@@ -44,12 +46,8 @@ const getUserMW = async (req, res, next) => {
 };
 app.use(getUserMW);
 
-//starta en ny subscription
 app.post("/startASubscription", async (req, res) => {
-  const response = await startASubscription(
-    req.body.email,
-    req.body.searchWord
-  );
+  const response = await startASubscription(user, searchWord);
   await res.send(response);
 });
 
@@ -75,7 +73,7 @@ app.post("/getUsersSubscribes", async (req, res) => {
 });
 
 app.post("/removeSearchFromUser", async (req, res) => {
-  const response = await removeSearch(user, req.body.searchWord);
+  const response = await removeSearch(user, searchWord);
 
   res.send(response);
 });
