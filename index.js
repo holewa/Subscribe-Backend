@@ -7,7 +7,6 @@ const { mongooseConnect } = require("./MongooseConnect");
 const {
   startASubscription,
   checkForNewAdds,
-  getUserEarlierSearchWords,
   getLastAddForGivenSearch,
   userExists,
   getUserFromDb,
@@ -18,6 +17,11 @@ const {
   removeSearchFromDb20,
   getUserEarlierSearchWords20,
 } = require("./kladdiz");
+
+const {
+  // startASubscription
+  getEarlierSearchWords,
+} = require("./UserService");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -36,7 +40,12 @@ const userExistsMW = async (req, res, next) => {
     next();
     return;
   } else {
-    res.send("user not found");
+    const response = {
+      typeOfAlert: "alert alert-danger alert-dismissible fade show",
+      text: "Inga sökningar hittades",
+      earlierSearches: [],
+    };
+    res.send(response);
   }
 };
 
@@ -73,7 +82,7 @@ app.post("/mailIfNewAdds", async (req, res) => {
 
 //TODO: Undersök varför inte request body finns/funkar med get request
 app.post("/getUsersSubscribes", async (req, res) => {
-  const response = await getUserEarlierSearchWords20(user);
+  const response = await getEarlierSearchWords(user);
 
   res.send(response);
 });
