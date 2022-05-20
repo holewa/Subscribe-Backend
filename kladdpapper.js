@@ -1,9 +1,4 @@
-const {
-  mailIfNewAdds,
-  sleep,
-  getUserFromDb,
-  getUserEarlierSearchWords,
-} = require("./DatabaseService");
+const { mailIfNewAdds, sleep } = require("./DatabaseService");
 const { mongooseConnect } = require("./MongooseConnect");
 const Search = require("./Search");
 

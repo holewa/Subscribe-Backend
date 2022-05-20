@@ -59,7 +59,7 @@ async function startASubscription(user, searchWord) {
   return response;
 }
 
-async function checkForNewAdds(email, searchWord) {
+async function checkForNewAdds(user, searchWord) {
   //TODO: kolla om användaren prenumererar på det valda ordet
 
   //skrapar data från hemsidan
@@ -72,9 +72,6 @@ async function checkForNewAdds(email, searchWord) {
   const lastScrapedAdLink = lastScrapedAd.link;
   const lastScrapedAdTitle = lastScrapedAd.adTitle;
   const lastScrapedTimeStamp = lastScrapedAd.timeStamp;
-
-  // hämtar användare ur db och kollar sista annonsens titel och tidsstämpel
-  const user = await getUserFromDb(email);
 
   const searchesFromDb = user.searches;
 
@@ -124,15 +121,6 @@ async function checkForNewAdds(email, searchWord) {
 
   return newAdsFound ? lastScrapedAd : false;
 }
-
-const getUserFromDb = async (email) => {
-  //hämtar given användare
-  const user = await Search.where({ email: email }).findOne({
-    searchWord: "",
-  });
-
-  return user;
-};
 
 const getUserEarlierSearchWords = async (email) => {
   const userExist = await userExists(email);
@@ -199,13 +187,79 @@ const sleep = (minutes) => {
   });
 };
 
+async function checkForNewAdds(email, searchWord) {
+  //TODO: kolla om användaren prenumererar på det valda ordet
+
+  //skrapar data från hemsidan
+  const lastScrapedAds = await getAllAdsForGivenSearchWord(searchWord);
+
+  //senaste annonsen för givet sökord
+  const lastScrapedAd = lastScrapedAds[0];
+
+  //senaste annonsens länk, titel och tidsstämpel
+  const lastScrapedAdLink = lastScrapedAd.link;
+  const lastScrapedAdTitle = lastScrapedAd.adTitle;
+  const lastScrapedTimeStamp = lastScrapedAd.timeStamp;
+
+  // hämtar användare ur db och kollar sista annonsens titel och tidsstämpel
+  const user = await getUserFromDb(email);
+
+  const searchesFromDb = user.searches;
+
+  let newAdsFound = true;
+
+  searchesFromDb.forEach(async (search) => {
+    if (search.searchWord === searchWord) {
+      length = search.adArray.length;
+
+      //hämtar ut den senaste annonsrubriken och tidsstämpeln ur listan
+
+      for (let i = 0; i < length; i++) {
+        //kollar om den senast skrapade annons finns i db
+        if (
+          search.adArray[i].link === lastScrapedAdLink
+          // search.adArray[i].timeStamp === lastScrapedTimeStamp
+        ) {
+          newAdsFound = false;
+        }
+      }
+
+      if (newAdsFound) {
+        // stoppar in senaste annons- och tidsstämpel från skrap
+        search.adArray.push({
+          adTitle: lastScrapedAdTitle,
+          timeStamp: lastScrapedTimeStamp,
+          link: lastScrapedAdLink,
+        });
+        //skapar ett uppdaterat searchObject som läggs in i db
+        const updSearch = {
+          email: email,
+          searches: searchesFromDb,
+        };
+        await user.save(updSearch);
+
+        //TODO: response?
+        console.log(
+          `Ny annons hittad för sökningen: ${email} för sökordet ${searchWord} sparad i db!`
+        );
+      } else {
+        console.log(
+          `Ingen ny hittad för sökningen ${email} för sökordet ${searchWord} !!`
+        );
+      }
+    }
+  });
+
+  return newAdsFound ? lastScrapedAd : false;
+}
+
 module.exports = {
   startASubscription,
   checkForNewAdds,
-  getUserFromDb,
   getUserEarlierSearchWords,
   getLastAddForGivenSearch,
   userExists,
   mailIfNewAdds,
   sleep,
+  checkForNewAdds,
 };

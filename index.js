@@ -5,24 +5,25 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const { mongooseConnect } = require("./MongooseConnect");
 const {
-  // startASubscription,
-  checkForNewAdds,
   getLastAddForGivenSearch,
-  userExists,
   getUserFromDb,
 } = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
 const { runEveryXMinutes } = require("./kladdpapper");
 
-const { getEarlierSearchWords, removeSearch } = require("./UserService");
+const {
+  startASubscription,
+  getEarlierSearchWords,
+  removeSearch,
+} = require("./UserService");
 
-const { startASubscription } = require("./Testing2");
+const { checkForNewAdds } = require("./Testing2");
 
 app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-//runEveryXMinutes(20);
+//runEveryXMinutes(1);
 
 let user;
 let searchWord;
