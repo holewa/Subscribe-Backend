@@ -1,63 +1,6 @@
 const Search = require("./Search");
 const { scrape } = require("./scraper");
 const { sendMail } = require("./nodemailer");
-const { getEarlierSearchWords } = require("./UserService");
-
-async function startASubscription(user, searchWord) {
-  let response = {};
-
-  if (searchWord.length < 3) {
-    const response = {
-      typeOfAlert: "alert alert-danger alert-dismissible fade show",
-      text: "Vänligen skriv in ett ord med minst tre bokstäver",
-      earlierSearches: [],
-    };
-    return response;
-  }
-
-  const earlierSearches = await getEarlierSearchWords(user);
-
-  //hämtar användarens olika sökningar inkl resultat
-  const searchArray = user.searches;
-
-  let searchDoneBefore = false;
-  //Ittererar över användarens tidigare sökningar och ser om samma sökning gjorts
-  searchArray.forEach((ad) => {
-    if (ad.searchWord === searchWord) {
-      searchDoneBefore = true;
-    }
-  });
-
-  //om searchDoneBefore är false skapas en ny sökning för given användare
-  if (!searchDoneBefore) {
-    //skrapar data
-    const data = await scrape(
-      "https://www.bortskankes.se/index.php?lan=&kat=&searchtxt=&page=0&showclosed=n",
-      searchWord
-    );
-
-    response = {
-      typeOfAlert: "alert alert-primary alert-dismissible fade show",
-      text: "Prenumeration skapad!",
-      earlierSearches: earlierSearches,
-    };
-
-    //lägger till den nya datan i arrayen som plockades ur från användaren
-    searchArray.push({ searchWord: searchWord, adArray: data });
-
-    //sparar användarens nya objekt
-    user.searches = searchArray;
-    await user.save();
-  } else {
-    response = {
-      typeOfAlert: "alert alert-danger alert-dismissible fade show",
-      text: "Du prenumererar redan på det valda sökordet",
-      earlierSearches: earlierSearches,
-    };
-  }
-
-  return response;
-}
 
 async function checkForNewAdds(user, searchWord) {
   //TODO: kolla om användaren prenumererar på det valda ordet
@@ -121,29 +64,6 @@ async function checkForNewAdds(user, searchWord) {
 
   return newAdsFound ? lastScrapedAd : false;
 }
-
-const getUserEarlierSearchWords = async (email) => {
-  const userExist = await userExists(email);
-
-  const earlierSearches = [];
-
-  if (userExist) {
-    const user = await getUserFromDb(email);
-
-    const userSearchObj = user.searches;
-
-    userSearchObj.forEach((search) => {
-      earlierSearches.push(search.searchWord);
-    });
-  }
-  const response = {
-    typeOfAlert: "alert alert-primary alert-dismissible fade show",
-    text: "Inga sökningar hittades!",
-    earlierSearches: earlierSearches,
-  };
-
-  return response;
-};
 
 const getAllAdsForGivenSearchWord = async (searchWord) => {
   //skrapade annonser för givet sökord
@@ -254,9 +174,7 @@ async function checkForNewAdds(email, searchWord) {
 }
 
 module.exports = {
-  startASubscription,
   checkForNewAdds,
-  getUserEarlierSearchWords,
   getLastAddForGivenSearch,
   userExists,
   mailIfNewAdds,

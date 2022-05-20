@@ -23,7 +23,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-//runEveryXMinutes(1);
+runEveryXMinutes(1);
 
 let user;
 let searchWord;
