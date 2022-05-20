@@ -13,10 +13,7 @@ const {
 } = require("./BortskankesService");
 const { sendMail } = require("./nodemailer");
 const { removeSearchFromDb, runEveryXMinutes } = require("./kladdpapper");
-const {
-  removeSearchFromDb20,
-  getUserEarlierSearchWords20,
-} = require("./kladdiz");
+const { removeSearchFromDb20 } = require("./kladdiz");
 
 const {
   // startASubscription

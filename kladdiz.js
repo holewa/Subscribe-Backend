@@ -75,24 +75,6 @@ const removeSearchFromDb20 = async (user, searchWordToDelete) => {
   return response;
 };
 
-const getUserEarlierSearchWords20 = async (user) => {
-  const earlierSearches = [];
-  const userSearchObj = user.searches;
-
-  userSearchObj.forEach((search) => {
-    earlierSearches.push(search.searchWord);
-  });
-
-  const response = {
-    typeOfAlert: "alert alert-primary alert-dismissible fade show",
-    text: "Inga sökningar hittades!",
-    earlierSearches: earlierSearches,
-  };
-
-  return response;
-};
-
 module.exports = {
   removeSearchFromDb20,
-  getUserEarlierSearchWords20,
 };

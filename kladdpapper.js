@@ -65,38 +65,6 @@ const getDataFromDb = async () => {
   return data;
 };
 
-const removeSearchFromDb = async (email, searchWordToDelete) => {
-  const user = await getUserFromDb(email);
-
-  userSearches = user.searches;
-
-  console.log(userSearches);
-
-  const updatedSearches = userSearches.filter(
-    (obj) => obj.searchWord !== searchWordToDelete
-  );
-
-  //lista med enbart sökord för response
-  const earlierSearches = [];
-  updatedSearches.forEach((search) => {
-    earlierSearches.push(search.searchWord);
-  });
-
-  user.searches = updatedSearches;
-  //sparar användarens nya objekt
-  await user.save();
-
-  console.log("Sökordet borttaget!");
-
-  const response = {
-    typeOfAlert: "alert alert-primary alert-dismissible fade show",
-    text: "Prenumeration för sökord borttaget!",
-    earlierSearches: earlierSearches,
-  };
-
-  return response;
-};
-
 mongooseConnect();
 
 const runEveryXMinutes = async (minutes) => {
@@ -176,7 +144,6 @@ function objectsEqual(o1, o2) {
 
 module.exports = {
   checkForNewAddsForEveryUserAndSendEmail,
-  removeSearchFromDb,
   getDataFromDb,
   runEveryXMinutes,
 };
