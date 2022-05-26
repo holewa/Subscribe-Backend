@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { mongooseConnect } = require("./MongooseConnect");
-const { getUserFromDb } = require("./DatabaseService");
+const { getUserFromDb, checkForNewAdds } = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
 const { runEveryXMinutes } = require("./kladdpapper");
 
@@ -14,20 +14,17 @@ const {
   removeSearch,
 } = require("./UserService");
 
-const { checkForNewAdds } = require("./Testing2");
-
 app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-// runEveryXMinutes(1);
-
-// sendMail("holewa@gmail.com", "CylindasGiiigpis", "spis", "länk", "bild");
+runEveryXMinutes(1);
 
 let user;
 let searchWord;
 // checkForNewAddsForEveryUserAndSendEmail();
 
+//MiddleWare som sätter user innan varje anrop.
 const getUserMW = async (req, res, next) => {
   //hämtar den givna användaren
   user = await getUserFromDb(req.body.email);

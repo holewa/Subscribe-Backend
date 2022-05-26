@@ -6,41 +6,28 @@ const checkForNewAddsForEveryUserAndSendEmail = async () => {
   //hämtar alla användare ur db
   const dataFromDb = await getDataFromDb();
 
-  //skapar en array med bara användare och sökObj
   const userAndSearches = [];
   dataFromDb.forEach(async (user) => {
     userAndSearches.push({
-      email: user.email,
+      user: user,
       searches: user.searches,
     });
   });
 
-  // {
-  //  'email': 'holewa@gmail.com',
-  //   'searches': [ {searchWord: 'blandare'
-  //                      adArray{}
-  //                      },
-  //                   {},
-  //                   {}
-  //    ]
-
-  //
-  // }
-
-  //skapar en array med enbart användare och sökord
+  //skapar en array med enbart unika användare och sökord
   const userAndSearchesObject = [];
   for (let i = 0; i < userAndSearches.length; i++) {
     for (let j = 0; j < userAndSearches[i].searches.length; j++) {
       userAndSearchesObject.push({
-        email: userAndSearches[i].email,
+        user: userAndSearches[i].user,
         searchWord: userAndSearches[i].searches[j].searchWord,
       });
     }
   }
 
-  //för varje användare + sökord => skapa en prenumeration
+  //för varje användare + sökord => Skicka ut info om ny annons.
   userAndSearchesObject.map(async (obj) => {
-    const data = await mailIfNewAdds(obj.email, obj.searchWord);
+    const data = await mailIfNewAdds(obj.user, obj.searchWord);
     return data;
   });
 };
