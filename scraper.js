@@ -108,12 +108,11 @@ async function scrape(url, searchWord) {
   }
 
   browser.close();
-
   return ads;
 }
 
 module.exports = {
-  scrape: scrape,
+  scrape,
 };
 
 //TODO:

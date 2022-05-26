@@ -41,7 +41,6 @@ const checkForNewAddsForEveryUserAndSendEmail = async () => {
   //för varje användare + sökord => skapa en prenumeration
   userAndSearchesObject.map(async (obj) => {
     const data = await mailIfNewAdds(obj.email, obj.searchWord);
-
     return data;
   });
 };

@@ -4,10 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { mongooseConnect } = require("./MongooseConnect");
-const {
-  getLastAddForGivenSearch,
-  getUserFromDb,
-} = require("./DatabaseService");
+const { getUserFromDb } = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
 const { runEveryXMinutes } = require("./kladdpapper");
 
@@ -23,7 +20,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-runEveryXMinutes(1);
+// runEveryXMinutes(1);
+
+// sendMail("holewa@gmail.com", "CylindasGiiigpis", "spis", "länk", "bild");
 
 let user;
 let searchWord;
@@ -54,15 +53,10 @@ app.post("/startASubscription", async (req, res) => {
 
 //kollar om nya annonser har tillkommit
 app.post("/mailIfNewAdds", async (req, res) => {
-  const newAdsFound = await checkForNewAdds(
-    req.body.email,
-    req.body.searchWord
-  );
-  const lastAdd = await getLastAddForGivenSearch(req.searchWord);
-  const linkToLastAdd = lastAdd.link;
+  const newAdFound = await checkForNewAdds(user, searchWord);
 
-  if (newAdsFound) {
-    sendMail(req.body.email, req.body.searchWord, linkToLastAdd);
+  if (newAdFound) {
+    sendMail(user, newAdFound.adTitle, searchWord, newAdFound.link);
   }
 });
 
@@ -78,15 +72,6 @@ app.post("/removeSearchFromUser", async (req, res) => {
 
   res.send(response);
 });
-
-// app.post("/removeSearchFromUser", async (req, res) => {
-//   const response = await removeSearchFromDb(
-//     req.body.email,
-//     req.body.searchWord
-//   );
-
-//   res.send(response);
-// });
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {

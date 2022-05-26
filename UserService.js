@@ -78,7 +78,7 @@ const removeSearch = async (user, searchWordToDelete) => {
 
   const response = {
     typeOfAlert: "alert alert-danger alert-dismissible fade show",
-    text: "Användaren hittades inte",
+    text: "Sökordet borttaget!",
     earlierSearches: [],
     earlierSearches: earlierSearches,
   };

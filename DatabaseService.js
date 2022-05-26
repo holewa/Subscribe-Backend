@@ -25,7 +25,7 @@ async function checkForNewAdds(email, searchWord) {
 
   searchesFromDb.forEach(async (search) => {
     if (search.searchWord === searchWord) {
-      length = search.adArray.length;
+      const length = search.adArray.length;
 
       //hämtar ut den senaste annonsrubriken och tidsstämpeln ur listan
 
@@ -112,6 +112,17 @@ const mailIfNewAdds = async (email, searchWord) => {
   }
 };
 
+const mailIfNewAdds2 = async (email, searchWord) => {
+  const newAdsFound = await checkForNewAdds(email, searchWord);
+
+  if (newAdsFound) {
+    const lastAdTitle = newAdsFound.adTitle;
+    const lastAdLink = newAdsFound.link;
+    const lastAdImgUrl = newAdsFound.imgUrl;
+    sendMail(email, lastAdTitle, searchWord, lastAdLink, lastAdImgUrl);
+  }
+};
+
 const sleep = (minutes) => {
   const minutesInMilliSeconds = minutes * 1000 * 60;
   return new Promise((resolve) => {
@@ -126,4 +137,5 @@ module.exports = {
   userExists,
   mailIfNewAdds,
   sleep,
+  mailIfNewAdds2,
 };
