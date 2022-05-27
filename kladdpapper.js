@@ -1,5 +1,4 @@
 const { mailIfNewAdds, sleep } = require("./DatabaseService");
-const { mongooseConnect } = require("./MongooseConnect");
 const Search = require("./Search");
 
 const checkForNewAddsForEveryUserAndSendEmail = async () => {
@@ -45,8 +44,6 @@ const getDataFromDb = async () => {
 
   return data;
 };
-
-mongooseConnect();
 
 const runEveryXMinutes = async (minutes) => {
   while (true) {

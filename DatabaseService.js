@@ -107,6 +107,20 @@ async function checkForNewAdds(user, searchWord) {
   return newAdsFound ? lastScrapedAd : false;
 }
 
+const getDataFromDb = async () => {
+  const data = await Search.find({}, function (err, result) {
+    if (err) {
+      console.log(err);
+    }
+  })
+    .clone()
+    .catch(function (err) {
+      console.log(err);
+    });
+
+  return data;
+};
+
 module.exports = {
   checkForNewAdds,
   getUserFromDb,
@@ -114,4 +128,5 @@ module.exports = {
   userExists,
   mailIfNewAdds,
   sleep,
+  getDataFromDb,
 };

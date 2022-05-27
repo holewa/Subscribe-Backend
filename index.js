@@ -6,8 +6,7 @@ const cors = require("cors");
 const { mongooseConnect } = require("./MongooseConnect");
 const { getUserFromDb, checkForNewAdds } = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
-const { runEveryXMinutes } = require("./kladdpapper");
-
+const { runProgramEveryXMinutes } = require("./ApplicationService");
 const {
   startASubscription,
   getEarlierSearchWords,
@@ -18,11 +17,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-runEveryXMinutes(1);
+runProgramEveryXMinutes(1);
 
 let user;
 let searchWord;
-// checkForNewAddsForEveryUserAndSendEmail();
 
 //MiddleWare som sätter user innan varje anrop.
 const getUserMW = async (req, res, next) => {
