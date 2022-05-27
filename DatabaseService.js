@@ -54,8 +54,6 @@ const sleep = (minutes) => {
 };
 
 async function checkForNewAdds(user, searchWord) {
-  //TODO: kolla om användaren prenumererar på det valda ordet
-
   //skrapar data från hemsidan
   const lastScrapedAds = await getAllAdsForGivenSearchWord(searchWord);
 
@@ -68,15 +66,13 @@ async function checkForNewAdds(user, searchWord) {
 
   searchesFromDb.forEach(async (search) => {
     if (search.searchWord === searchWord) {
-      length = search.adArray.length;
-
+      const length = search.adArray.length;
       //hämtar ut den senaste annonsrubriken och tidsstämpeln ur listan
-
       for (let i = 0; i < length; i++) {
-        //kollar om den senast skrapade annons finns i db
         if (
-          search.adArray[i].link === lastScrapedAd.link
-          // search.adArray[i].timeStamp === lastScrapedTimeStamp
+          //kollar om den senast skrapade annons finns i db
+          search.adArray[i].adTitle === lastScrapedAd.adTitle &&
+          search.adArray[i].timeStamp === lastScrapedAd.timeStamp
         ) {
           newAdsFound = false;
         }
