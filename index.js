@@ -8,7 +8,6 @@ const {
   getUserFromDb,
   checkForNewAdds,
   removeAddsForGivenSearchWord,
-  manuallyCheckForNewAdds,
   mailIfNewAdds,
 } = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");

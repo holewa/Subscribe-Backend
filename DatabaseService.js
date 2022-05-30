@@ -135,10 +135,6 @@ const removeAddsForGivenSearchWord = async (user, searchWordToDelete) => {
   console.log("Annonser för sökordet borttagna!");
 };
 
-const manuallyCheckForNewAdds = async (user, searchWordToDelete) => {
-  console.log("Allt i sin ordning");
-};
-
 module.exports = {
   checkForNewAdds,
   getUserFromDb,
@@ -148,5 +144,4 @@ module.exports = {
   sleep,
   getDataFromDb,
   removeAddsForGivenSearchWord,
-  manuallyCheckForNewAdds,
 };
