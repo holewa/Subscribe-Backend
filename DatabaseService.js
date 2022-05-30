@@ -1,6 +1,7 @@
 const Search = require("./Search");
 const { scrape } = require("./scraper");
 const { sendMail } = require("./nodemailer");
+const { where } = require("./Search");
 
 const getUserFromDb = async (email) => {
   //hämtar given användare
@@ -121,6 +122,23 @@ const getDataFromDb = async () => {
   return data;
 };
 
+const removeAddsForGivenSearchWord = async (user, searchWordToDelete) => {
+  userSearches = user.searches;
+
+  for (let i = 0; i < userSearches.length; i++) {
+    if (userSearches[i].searchWord === searchWordToDelete) {
+      userSearches[i].adArray = [];
+    }
+  }
+  await user.save();
+
+  console.log("Annonser för sökordet borttagna!");
+};
+
+const manuallyCheckForNewAdds = async (user, searchWordToDelete) => {
+  console.log("Allt i sin ordning");
+};
+
 module.exports = {
   checkForNewAdds,
   getUserFromDb,
@@ -129,4 +147,6 @@ module.exports = {
   mailIfNewAdds,
   sleep,
   getDataFromDb,
+  removeAddsForGivenSearchWord,
+  manuallyCheckForNewAdds,
 };

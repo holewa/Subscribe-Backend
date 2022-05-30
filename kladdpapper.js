@@ -120,6 +120,33 @@ function objectsEqual(o1, o2) {
   return true;
 }
 
+//PUPPETEER ANTECKNINGAR!
+//   //markerar och anger användarnamn
+//   await page.waitForSelector(fieldId);
+
+//   await page.click(buttonId);
+
+//   await page.type(fieldId, myUser);
+
+//   //markerar och anger lösenord
+//   await page.waitForSelector(fieldId);
+
+//   await page.type(fieldId, password);
+
+//   await Promise.all([
+//     page.click(buttonId),
+//     page.waitForNavigation({ waitUntil: "networkidle0" }),
+//   ]);
+
+//   const [el] = await page.$x(
+//     "/html/body/ytd-app/div/ytd-page-manager/ytd-browse/div[3]/ytd-c4-tabbed-header-renderer/tp-yt-app-header-layout/div/tp-yt-app-header/div[2]/div[2]/div/div[1]/div/div[1]/ytd-channel-name/div/div/yt-formatted-string"
+//   );
+
+//   //säkerställer att den browern väntar på både klick och sen naviagtion
+
+// page.waitForNavigation({ waitUntil: "networkidle0" }),
+//ta ett screenshot och se hur syns
+
 module.exports = {
   checkForNewAddsForEveryUserAndSendEmail,
   getDataFromDb,

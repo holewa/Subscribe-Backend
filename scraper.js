@@ -60,37 +60,12 @@ async function scrape(url, searchWord) {
 
   await page.goto(url);
 
-  //   await page.click(buttonId);
-
   await page.setViewport({ width: 1200, height: 1822 });
-
-  //   //markerar och anger användarnamn
-  //   await page.waitForSelector(fieldId);
-
-  //   await page.type(fieldId, myUser);
-
-  //   //markerar och anger lösenord
-  //   await page.waitForSelector(fieldId);
-
-  //   await page.type(fieldId, password);
-
-  //   await Promise.all([
-  //     page.click(buttonId),
-  //     page.waitForNavigation({ waitUntil: "networkidle0" }),
-  //   ]);
-
-  //   const [el] = await page.$x(
-  //     "/html/body/ytd-app/div/ytd-page-manager/ytd-browse/div[3]/ytd-c4-tabbed-header-renderer/tp-yt-app-header-layout/div/tp-yt-app-header/div[2]/div[2]/div/div[1]/div/div[1]/ytd-channel-name/div/div/yt-formatted-string"
-  //   );
-
-  //   //säkerställer att den browern väntar på både klick och sen naviagtion
 
   //klicka på knapp för att expandera sökfältet
   await Promise.all([
     page.waitForSelector("#searchfilterdivtitle > div:nth-child(3) > a"),
     page.click("#searchfilterdivtitle > div:nth-child(3) > a"),
-    // page.waitForNavigation({ waitUntil: "networkidle0" }),
-    //ta ett screenshot och se hur syns
   ]);
 
   await page.type("#searchtxt", searchWord + "");

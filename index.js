@@ -4,7 +4,13 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { mongooseConnect } = require("./MongooseConnect");
-const { getUserFromDb, checkForNewAdds } = require("./DatabaseService");
+const {
+  getUserFromDb,
+  checkForNewAdds,
+  removeAddsForGivenSearchWord,
+  manuallyCheckForNewAdds,
+  mailIfNewAdds,
+} = require("./DatabaseService");
 const { sendMail } = require("./nodemailer");
 const { runProgramEveryXMinutes } = require("./ApplicationService");
 const {
@@ -17,7 +23,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 mongooseConnect();
-runProgramEveryXMinutes(1);
+// runProgramEveryXMinutes(5)
 
 let user;
 let searchWord;
@@ -41,6 +47,11 @@ const getUserMW = async (req, res, next) => {
 };
 app.use(getUserMW);
 
+app.post("/removeAddsForGivenSearchWord", async (req, res) => {
+  await removeAddsForGivenSearchWord(user, searchWord);
+  await res.send("Annonser borttagna");
+});
+
 app.post("/startASubscription", async (req, res) => {
   const response = await startASubscription(user, searchWord);
   await res.send(response);
@@ -51,7 +62,12 @@ app.post("/mailIfNewAdds", async (req, res) => {
   const newAdFound = await checkForNewAdds(user, searchWord);
 
   if (newAdFound) {
-    sendMail(user, newAdFound.adTitle, searchWord, newAdFound.link);
+    sendMail(user, newAdFound.adTitle, searchWord, newAdFound.link, newAdFound.imgUrl);
+    res.send("Ny annons hittad, mail skickat!");
+  } else {
+    res.send(
+      `Ingen ny annons hittad för sökningen ${user.email} för sökordet ${searchWord} !!`
+    );
   }
 });
 
